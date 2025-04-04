@@ -4,7 +4,14 @@
 
 package com.mycompany.libreriadejuegosgui;
 
-import Frontend.VentanaInicial;
+import Frontend.JFramePrincipal.VentanaInicial;
+
+
+
+
+
+
+
 
 /**
  *
@@ -14,7 +21,9 @@ public class LibreriaDeJuegosGUI {
 
     //Main encargado de crear la ventana inicial de un Jframe.
     public static void main(String[] args) {
-        VentanaInicial ventana = new VentanaInicial();
-        ventana.setVisible(true);
+        VentanaInicial ventanaInicial = new VentanaInicial();
+        ventanaInicial.setVisible(true);
     }
+
+        
 }
