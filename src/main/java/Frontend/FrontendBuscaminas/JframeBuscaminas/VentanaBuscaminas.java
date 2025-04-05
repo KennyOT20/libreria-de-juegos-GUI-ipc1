@@ -5,9 +5,9 @@
 package Frontend.FrontendBuscaminas.JframeBuscaminas;
 
 import Backend.BuscaMinas.Tablero.Tablero;
+import Backend.BuscaMinas.partidaBuscaminas.Partida;
 import Backend.Jugador.Jugador;
 import Frontend.JFramePrincipal.VentanaInicial;
-import java.util.InputMismatchException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -17,10 +17,12 @@ import javax.swing.JOptionPane;
  */
 public class VentanaBuscaminas extends javax.swing.JFrame {
     
-    private int cantidadFilas;
-    private int cantidadColumnas;
-    private int cantidadMinas;
-    private String nombreJugador;
+    private final Jugador jugador;
+    private final Tablero tablero;
+    private boolean minas;
+    private boolean columnas;
+    private boolean filas;
+    private boolean nombre;
     
     
     /**
@@ -31,6 +33,8 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
         this.setTitle("Buscaminas");
         setLocationRelativeTo(null);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.jugador = new Jugador();
+        this.tablero = new Tablero();
     }
 
     /**
@@ -62,7 +66,10 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+
         labelDeTitulo.setFont(new java.awt.Font("Yrsa SemiBold", 0, 36)); // NOI18N
+        labelDeTitulo.setForeground(new java.awt.Color(0, 0, 0));
         labelDeTitulo.setText("BIENVENIDO A BUSCAMINAS ");
         labelDeTitulo.setAutoscrolls(true);
         labelDeTitulo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -71,30 +78,37 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
         jScrollPane1.setViewportView(textFieldFilas);
 
         labelFilas.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        labelFilas.setForeground(new java.awt.Color(0, 0, 0));
         labelFilas.setText("Ingrese la cantidad de filas:");
 
         labelInstruccion.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        labelInstruccion.setForeground(new java.awt.Color(0, 0, 0));
         labelInstruccion.setText("¡Es hora de configurar tu tablero!");
 
         labelColumnas.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        labelColumnas.setForeground(new java.awt.Color(0, 0, 0));
         labelColumnas.setText("Ingrese la cantidad de columnas: ");
 
         textFieldColumnas.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         jScrollPane2.setViewportView(textFieldColumnas);
 
         jLabel1.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Ingrese su nombre: ");
 
         textFieldNombreJugador.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         jScrollPane3.setViewportView(textFieldNombreJugador);
 
         jLabel2.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Ingrese la cantidad de minas: ");
 
         textFieldMinas.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         jScrollPane4.setViewportView(textFieldMinas);
 
+        botonInicioPartida.setBackground(new java.awt.Color(102, 204, 255));
         botonInicioPartida.setFont(new java.awt.Font("Yrsa SemiBold", 0, 18)); // NOI18N
+        botonInicioPartida.setForeground(new java.awt.Color(0, 0, 0));
         botonInicioPartida.setText("Iniciar Partida");
         botonInicioPartida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +116,9 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
             }
         });
 
+        botonMenuInicial.setBackground(new java.awt.Color(255, 153, 153));
         botonMenuInicial.setFont(new java.awt.Font("Yrsa SemiBold", 0, 18)); // NOI18N
+        botonMenuInicial.setForeground(new java.awt.Color(0, 0, 0));
         botonMenuInicial.setText("Volver al menu");
         botonMenuInicial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,15 +130,6 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(357, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelDeTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(184, 184, 184))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelInstruccion, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(348, 348, 348))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(111, 111, 111)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,6 +148,15 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
                     .addComponent(botonInicioPartida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botonMenuInicial, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(321, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(labelInstruccion, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(348, 348, 348))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(labelDeTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(220, 220, 220))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,15 +181,19 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
                         .addComponent(botonInicioPartida, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(61, 61, 61)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(labelColumnas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(botonMenuInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4))
-                .addContainerGap(72, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(labelColumnas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4))
+                        .addContainerGap(72, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addComponent(botonMenuInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(86, 86, 86))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -201,15 +221,105 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
 
     private void botonInicioPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonInicioPartidaActionPerformed
         // TODO add your handling code here:
-  
-            
+      validarNombre();
+      validarFilas();
+      validarColumnas();
+      validarMinas();
+      
+      if(minas == true && columnas == true && nombre == true && filas == true){
+          VentanaJuegoBuscaminas iniciarJuego = new VentanaJuegoBuscaminas(jugador, tablero);
+          iniciarJuego.setVisible(true);
+          Partida partida = new Partida(jugador, tablero);
+          partida.iniciarPartida();
+          
+          this.setVisible(false);
+          
+      } else{
+          JOptionPane.showMessageDialog(this, "Error, hay datos incorrectos");
+      }
+        
             
     }//GEN-LAST:event_botonInicioPartidaActionPerformed
 
-    private boolean validarNombre(){
-        return false;
+    private void validarNombre(){
+        
+        String nombreObtenido = textFieldNombreJugador.getText();
+        
+        if(nombreObtenido.isEmpty()){
+            nombre = false;
+            JOptionPane.showMessageDialog(this, "Error, el nombre no puede estar vacio");
+        } else{
+            jugador.setNombreJugador(nombreObtenido);
+            nombre = true;
+        }
     }
     
+    private void validarFilas(){
+        int cantidadDeFilas;
+        String filasObtenidas = textFieldFilas.getText();
+        
+        
+        try{
+            cantidadDeFilas = Integer.parseInt(filasObtenidas);
+            
+            if(cantidadDeFilas > 0){
+                tablero.setCantidadFilasTablero(cantidadDeFilas);
+                filas = true;
+            } else{
+                filas = false;
+                JOptionPane.showMessageDialog(this, "Error las columnas deben de ser mayor a 0");
+            }
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Error deben de ser numeros enteros para las columnas.");
+        }
+    }
+    
+    private void validarColumnas(){
+        int cantidadColumnas;
+        String columnasObtenidas = textFieldColumnas.getText();
+        
+        try{
+            cantidadColumnas = Integer.parseInt(columnasObtenidas);
+            
+            if(cantidadColumnas > 0 ){
+                tablero.setCantidadColumnasTablero(cantidadColumnas);
+                columnas = true;
+            } else{
+                columnas = false;
+                JOptionPane.showMessageDialog(this, "Error, las columnas tienen que ser mayor a 0");
+                
+            }
+        } catch(NumberFormatException e ){
+            JOptionPane.showMessageDialog(this, "Error, las columnas deben de ser numeros enteros.");
+            
+        }
+        
+    }
+    
+    private void validarMinas(){
+        int cantidadDeMinas;
+        int columnasMax = tablero.getCantidadColumnasTablero();
+        int filasMax = tablero.getCantidadFilasTablero();
+        int soporteTablero = columnasMax * filasMax;
+        String minasObtenidas = textFieldMinas.getText();
+        
+        try{
+            cantidadDeMinas = Integer.parseInt(minasObtenidas);
+            
+            if(cantidadDeMinas > 0 && cantidadDeMinas < soporteTablero){
+                tablero.setCantidadMinas(cantidadDeMinas);
+                minas = true;
+            } else{
+                minas = false;
+                JOptionPane.showMessageDialog(this, "Error en los datos de las minas");
+            }
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Error, las minas solo aceptan numeros enteros");
+            
+        }
+        
+        
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonInicioPartida;
     private javax.swing.JButton botonMenuInicial;

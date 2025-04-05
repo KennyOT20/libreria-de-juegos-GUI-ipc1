@@ -15,6 +15,7 @@ public class Jugador {
     private int minasDescubiertas;
     private int disparosAcertados;
     private int disparosFallados;
+    private int tiempoBuscaminas;
 
     public String getNombreJugador() {
         return nombreJugador;
@@ -54,6 +55,14 @@ public class Jugador {
 
     public void setDisparosFallados(int disparosFallados) {
         this.disparosFallados = disparosFallados;
+    }
+
+    public int getTiempoBuscaminas() {
+        return tiempoBuscaminas;
+    }
+
+    public void setTiempoBuscaminas(int tiempoBuscaminas) {
+        this.tiempoBuscaminas = tiempoBuscaminas;
     }
     
     
