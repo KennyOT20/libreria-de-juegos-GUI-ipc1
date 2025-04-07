@@ -4,10 +4,17 @@
  */
 package Frontend.FrontendBuscaminas.JframeBuscaminas;
 
-import Backend.BuscaMinas.Tablero.Tablero;
-import Backend.BuscaMinas.Temporizador.TemporizadorBuscaminas;
+import Backend.BackendBuscaMinas.componentesTablero.Tablero;
+import Backend.BackendBuscaMinas.Temporizador.TemporizadorBuscaminas;
+import Backend.BackendBuscaMinas.componentesTablero.Casilla;
 import Backend.Jugador.Jugador;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,9 +22,10 @@ import javax.swing.JFrame;
  */
 public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
 
-    private TemporizadorBuscaminas temporizador;
-    private Jugador jugador;
-    private Tablero tablero;
+    private final TemporizadorBuscaminas temporizador;
+    private final Jugador jugador;
+    private final Tablero tablero;
+    private final Casilla casilla;
     
     /**
      * Creates new form VentanaJuegoBuscaminas
@@ -30,19 +38,8 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         this.temporizador = new TemporizadorBuscaminas();
         this.jugador = jugador;
         this.tablero = tablero;
-        
-        
-        temporizador.setActualizadorDeTiempo((String tiempo) -> {
-           
-        labelInicio.setText("Tiempo en curso: ");
-        labeltiempo.setText(tiempo);
-    });
-        
-        
-         String cantidadMinas = Integer.toString(tablero.getCantidadMinas());
-         
-         labelNombre.setText(jugador.getNombreJugador());
-         minasRestantes.setText(cantidadMinas);
+        this.casilla = new Casilla();
+        actualizarLabels();
     }
 
     /**
@@ -56,21 +53,29 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
 
         PaneLTablero = new javax.swing.JPanel();
         PanelTemporizador = new javax.swing.JPanel();
+        panelTemporizador = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        panelTiempo = new javax.swing.JPanel();
         labelInicio = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         labeltiempo = new javax.swing.JLabel();
         PanelDatosJugador = new javax.swing.JPanel();
         botonMenuInicial = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         labelNombreTitulo = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
         labelNombre = new javax.swing.JLabel();
-        minasRestantes = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
         labelTituloMinas = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        minasRestantes = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
 
-        PaneLTablero.setBackground(new java.awt.Color(51, 51, 51));
+        PaneLTablero.setBackground(new java.awt.Color(204, 204, 204));
         PaneLTablero.setForeground(new java.awt.Color(102, 102, 102));
 
         javax.swing.GroupLayout PaneLTableroLayout = new javax.swing.GroupLayout(PaneLTablero);
@@ -81,51 +86,92 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         );
         PaneLTableroLayout.setVerticalGroup(
             PaneLTableroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        PanelTemporizador.setBackground(new java.awt.Color(102, 102, 255));
+        PanelTemporizador.setBackground(new java.awt.Color(153, 255, 153));
         PanelTemporizador.setForeground(new java.awt.Color(0, 204, 204));
+
+        panelTemporizador.setBackground(new java.awt.Color(102, 102, 255));
 
         jLabel1.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("TEMPORIZADOR: ");
 
-        labelInicio.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
-        labelInicio.setForeground(new java.awt.Color(0, 0, 0));
+        javax.swing.GroupLayout panelTemporizadorLayout = new javax.swing.GroupLayout(panelTemporizador);
+        panelTemporizador.setLayout(panelTemporizadorLayout);
+        panelTemporizadorLayout.setHorizontalGroup(
+            panelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+        );
+        panelTemporizadorLayout.setVerticalGroup(
+            panelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+        );
 
-        labeltiempo.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        panelTiempo.setBackground(new java.awt.Color(102, 153, 255));
+
+        labelInicio.setFont(new java.awt.Font("Yrsa SemiBold", 0, 36)); // NOI18N
+        labelInicio.setForeground(new java.awt.Color(0, 0, 0));
+        labelInicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout panelTiempoLayout = new javax.swing.GroupLayout(panelTiempo);
+        panelTiempo.setLayout(panelTiempoLayout);
+        panelTiempoLayout.setHorizontalGroup(
+            panelTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        panelTiempoLayout.setVerticalGroup(
+            panelTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelInicio, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+        );
+
+        jPanel1.setBackground(new java.awt.Color(102, 255, 255));
+
+        labeltiempo.setFont(new java.awt.Font("Yrsa SemiBold", 0, 36)); // NOI18N
         labeltiempo.setForeground(new java.awt.Color(0, 0, 0));
+        labeltiempo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labeltiempo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(labeltiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout PanelTemporizadorLayout = new javax.swing.GroupLayout(PanelTemporizador);
         PanelTemporizador.setLayout(PanelTemporizadorLayout);
         PanelTemporizadorLayout.setHorizontalGroup(
             PanelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(PanelTemporizadorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labeltiempo, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelTiempo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelTemporizador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         PanelTemporizadorLayout.setVerticalGroup(
             PanelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelTemporizadorLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(panelTemporizador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labelInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(labeltiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(panelTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(64, Short.MAX_VALUE))
         );
 
-        PanelDatosJugador.setBackground(new java.awt.Color(0, 204, 204));
+        PanelDatosJugador.setBackground(new java.awt.Color(102, 204, 255));
         PanelDatosJugador.setForeground(new java.awt.Color(255, 204, 204));
 
-        botonMenuInicial.setBackground(new java.awt.Color(153, 153, 255));
+        botonMenuInicial.setBackground(new java.awt.Color(255, 51, 51));
         botonMenuInicial.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        botonMenuInicial.setForeground(new java.awt.Color(0, 0, 0));
         botonMenuInicial.setText("Salir");
         botonMenuInicial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,58 +179,119 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(51, 102, 255));
+
         jLabel2.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("DATOS: ");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+        );
+
+        jPanel3.setBackground(new java.awt.Color(204, 255, 204));
 
         labelNombreTitulo.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         labelNombreTitulo.setForeground(new java.awt.Color(0, 0, 0));
+        labelNombreTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelNombreTitulo.setText("Partida de: ");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelNombreTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelNombreTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+        );
+
+        jPanel4.setBackground(new java.awt.Color(255, 204, 255));
 
         labelNombre.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         labelNombre.setForeground(new java.awt.Color(0, 0, 0));
+        labelNombre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        minasRestantes.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
-        minasRestantes.setForeground(new java.awt.Color(0, 0, 0));
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+        );
+
+        jPanel5.setBackground(new java.awt.Color(153, 153, 255));
 
         labelTituloMinas.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
         labelTituloMinas.setForeground(new java.awt.Color(0, 0, 0));
+        labelTituloMinas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTituloMinas.setText("Minas restantes:  ");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelTituloMinas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labelTituloMinas, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+        );
+
+        jPanel6.setBackground(new java.awt.Color(153, 153, 255));
+
+        minasRestantes.setFont(new java.awt.Font("Yrsa SemiBold", 0, 24)); // NOI18N
+        minasRestantes.setForeground(new java.awt.Color(0, 0, 0));
+        minasRestantes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(minasRestantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(minasRestantes, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout PanelDatosJugadorLayout = new javax.swing.GroupLayout(PanelDatosJugador);
         PanelDatosJugador.setLayout(PanelDatosJugadorLayout);
         PanelDatosJugadorLayout.setHorizontalGroup(
             PanelDatosJugadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(botonMenuInicial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(PanelDatosJugadorLayout.createSequentialGroup()
-                .addGroup(PanelDatosJugadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(PanelDatosJugadorLayout.createSequentialGroup()
-                        .addComponent(labelNombreTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(PanelDatosJugadorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelDatosJugadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(minasRestantes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelTituloMinas))
-                .addContainerGap(19, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         PanelDatosJugadorLayout.setVerticalGroup(
             PanelDatosJugadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelDatosJugadorLayout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labelNombreTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labelNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(labelTituloMinas)
-                .addGap(29, 29, 29)
-                .addComponent(minasRestantes, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botonMenuInicial))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(botonMenuInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,14 +302,14 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
                 .addComponent(PaneLTablero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PanelTemporizador, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(PanelTemporizador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PanelDatosJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(PanelTemporizador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelDatosJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(PaneLTablero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -213,13 +320,83 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     private void botonMenuInicialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonMenuInicialActionPerformed
         // TODO add your handling code here:
         temporizador.finalizarTemporizador();
-        jugador.setTiempoBuscaminas(temporizador.obtenerSegundosTemporizador());
+        JOptionPane.showMessageDialog(this, "Has abandonado la partida-");
+        
         VentanaBuscaminas ventanaJuego = new VentanaBuscaminas();
         ventanaJuego.setVisible(true);
         
         this.setVisible(false);
     }//GEN-LAST:event_botonMenuInicialActionPerformed
 
+    private void actualizarLabels(){
+        temporizador.setActualizadorDeTiempo((String tiempo) -> {
+           
+        labelInicio.setText("Tiempo: ");
+        labeltiempo.setText(tiempo);
+    });
+        
+        labelInicio.setText("Tiempo: ");
+         labeltiempo.setText("00:00");
+        
+        
+         String cantidadMinas = Integer.toString(tablero.getCantidadMinas());
+         String minasMax = Integer.toString(tablero.getMinasMax());
+         
+         labelNombre.setText(jugador.getNombreJugador());
+         minasRestantes.setText(cantidadMinas + "/ " + minasMax);
+    }
+    
+    /**
+     * Metodo encargado de generar el tablero del jugador 
+     */
+    public void generarTablero(){
+        int filas = tablero.getCantidadFilasTablero();
+        int columnas = tablero.getCantidadColumnasTablero();
+        
+        PaneLTablero.removeAll();
+        PaneLTablero.setLayout(new GridLayout(filas, columnas));
+        PaneLTablero.setPreferredSize(new Dimension(1117, 570));
+        
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+             colocarBotonesEnTablero();
+            }
+        }
+        
+        PaneLTablero.revalidate();
+        PaneLTablero.repaint();
+        
+    }
+    
+    /**
+     * Metodo encargado de colocar los botones en el tablero y darles estilo
+     */
+    private void colocarBotonesEnTablero(){
+        JButton botonCasillas = new JButton();
+        botonCasillas.setPreferredSize(new Dimension(40,40));
+        botonCasillas.setFocusPainted(false);
+        botonCasillas.setBackground(Color.white);
+        botonCasillas.setFont(new Font("Arial", Font.BOLD, 14));
+        
+        botonCasillas.addMouseListener(new java.awt.event.MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e){
+
+                if(e.getButton() == java.awt.event.MouseEvent.BUTTON1){
+                    temporizador.iniciarTemporizador();
+                    casilla.revelarCasilla();
+                } else if (e.getButton() == java.awt.event.MouseEvent.BUTTON3){
+                    casilla.marcarCasilla(botonCasillas);
+                }
+                
+            }
+        });
+        
+        PaneLTablero.add(botonCasillas);
+        
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PaneLTablero;
@@ -228,11 +405,19 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     private javax.swing.JButton botonMenuInicial;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JLabel labelInicio;
     private javax.swing.JLabel labelNombre;
     private javax.swing.JLabel labelNombreTitulo;
     private javax.swing.JLabel labelTituloMinas;
     private javax.swing.JLabel labeltiempo;
     private javax.swing.JLabel minasRestantes;
+    private javax.swing.JPanel panelTemporizador;
+    private javax.swing.JPanel panelTiempo;
     // End of variables declaration//GEN-END:variables
 }
