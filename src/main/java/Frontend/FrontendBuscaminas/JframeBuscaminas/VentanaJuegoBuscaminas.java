@@ -4,6 +4,7 @@
  */
 package Frontend.FrontendBuscaminas.JframeBuscaminas;
 
+import Backend.BackendBuscaMinas.ControladorPartida.ControladorPartida;
 import Backend.BackendBuscaMinas.componentesTablero.Tablero;
 import Backend.BackendBuscaMinas.Temporizador.TemporizadorBuscaminas;
 import Backend.BackendBuscaMinas.componentesTablero.Casilla;
@@ -12,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,7 +28,8 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     private final TemporizadorBuscaminas temporizador;
     private final Jugador jugador;
     private final Tablero tablero;
-    private final Casilla casilla;
+    private JButton[][] botonesCasillas;
+    private boolean primerClickUsuario = false;
     
     /**
      * Creates new form VentanaJuegoBuscaminas
@@ -38,7 +42,6 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         this.temporizador = new TemporizadorBuscaminas();
         this.jugador = jugador;
         this.tablero = tablero;
-        this.casilla = new Casilla();
         actualizarLabels();
     }
 
@@ -328,6 +331,11 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_botonMenuInicialActionPerformed
 
+    /**
+     * Metodo encargado de ir actualizando los labels, como el tiempo desde la clase 
+     * temporizador se usa un hilo.
+     * 
+     */
     private void actualizarLabels(){
         temporizador.setActualizadorDeTiempo((String tiempo) -> {
            
@@ -347,56 +355,181 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     }
     
     /**
-     * Metodo encargado de generar el tablero del jugador 
+     * Metodo encargado de generar el tablero, desde la clase tablero se manda a llamar
+     * el metodo de mostrar el tablero vacio sin minas 
      */
-    public void generarTablero(){
+    public void generarTablero() {
+        tablero.mostrarTablero();
         int filas = tablero.getCantidadFilasTablero();
         int columnas = tablero.getCantidadColumnasTablero();
-        
+
+        botonesCasillas = new JButton[filas][columnas];
+
         PaneLTablero.removeAll();
         PaneLTablero.setLayout(new GridLayout(filas, columnas));
         PaneLTablero.setPreferredSize(new Dimension(1117, 570));
-        
+
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-             colocarBotonesEnTablero();
+                colocarBotonesEnTablero(i, j);
             }
         }
-        
+
         PaneLTablero.revalidate();
         PaneLTablero.repaint();
-        
     }
-    
-    /**
-     * Metodo encargado de colocar los botones en el tablero y darles estilo
-     */
-    private void colocarBotonesEnTablero(){
+
+    private void colocarBotonesEnTablero(int i, int j) {
         JButton botonCasillas = new JButton();
-        botonCasillas.setPreferredSize(new Dimension(40,40));
+        botonCasillas.setPreferredSize(new Dimension(40, 40));
         botonCasillas.setFocusPainted(false);
         botonCasillas.setBackground(Color.white);
         botonCasillas.setFont(new Font("Arial", Font.BOLD, 14));
-        
-        botonCasillas.addMouseListener(new java.awt.event.MouseAdapter() {
-            
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e){
 
-                if(e.getButton() == java.awt.event.MouseEvent.BUTTON1){
+        botonesCasillas[i][j] = botonCasillas;
+
+        botonCasillas.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                Casilla casillaActual = tablero.getCasilla(i, j);
+               
+
+                if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     temporizador.iniciarTemporizador();
-                    casilla.revelarCasilla();
-                } else if (e.getButton() == java.awt.event.MouseEvent.BUTTON3){
-                    casilla.marcarCasilla(botonCasillas);
+
+                    if (casillaActual.casillaEstaRevelada()) 
+                        return;
+
+                    if (!primerClickUsuario) {
+                        tablero.generarCasillas(i, j);
+                        primerClickUsuario = true;
+                    }
+
+                    if (casillaActual.esCasillaMinada()) {
+                        casillaActual.revelarCasilla();
+                        actualizarBoton(botonCasillas, casillaActual);
+                      //  botonCasillas.setEnabled(false);
+                        temporizador.finalizarTemporizador();
+                        revelarTodasLasMinas();
+                        JOptionPane.showMessageDialog(null, "💥 ¡Has perdido! Tocaste una mina.");
+                        regresarVentana();
+                        
+                        return;
+                        
+                    }
+
+                    casillaActual.revelarCasilla();
+                    actualizarBoton(botonCasillas, casillaActual);
+                //    botonCasillas.setEnabled(false);
+
+                    if (casillaActual.getCantidadMinasAdyacentes() == 0 && !casillaActual.esCasillaMinada() ) {
+                        tablero.generarEfectoDomino(i, j);
+                    }
+
+                    for (int fila = 0; fila < tablero.getCantidadFilasTablero(); fila++) {
+                        for (int columna = 0; columna < tablero.getCantidadColumnasTablero(); columna++) {
+                            Casilla c = tablero.getCasilla(fila, columna);
+                            if (c.casillaEstaRevelada()) {
+                                actualizarBoton(botonesCasillas[fila][columna], c);
+                               // botonesCasillas[fila][columna].setEnabled(false);
+                            }
+                        }
+                    }
+
+                    verificarVictoria();
+
+                } else if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+                    if (!casillaActual.casillaEstaRevelada()) {
+                        casillaActual.alternarMarcado();
+
+                        if (casillaActual.estaMarcada()) {
+                            ImageIcon banderaIcono = new ImageIcon(getClass().getResource("/recursos/buscaminasBanderaBoton.png"));
+                            Image imagenRedimensionada = banderaIcono.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                            botonCasillas.setIcon(new ImageIcon(imagenRedimensionada));
+                            botonCasillas.setText("");
+                        } else {
+                            botonCasillas.setIcon(null);
+                        }
+                    }
                 }
-                
             }
         });
-        
+
         PaneLTablero.add(botonCasillas);
+    }
+
+    private void actualizarBoton(JButton boton, Casilla casillaActual) {
+        if (casillaActual.casillaEstaRevelada()) {
+            boton.setBackground(Color.LIGHT_GRAY);
+            boton.setFont(new Font("Arial", Font.BOLD, 18));
+
+            if (casillaActual.esCasillaMinada()) {
+                ImageIcon iconoMina = new ImageIcon(getClass().getResource("/recursos/bombaImagen.png"));
+                Image imagenRedimensionada = iconoMina.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                boton.setIcon(new ImageIcon(imagenRedimensionada));
+                boton.setText("");
+            } else {
+                int minasAdyacentes = casillaActual.getCantidadMinasAdyacentes();
+
+                if (minasAdyacentes > 0) {
+                    boton.setText(String.valueOf(minasAdyacentes));
+                    boton.setIcon(null);
+                    switch (minasAdyacentes) {
+                        case 1 -> boton.setForeground(Color.BLUE);
+                        case 2 -> boton.setForeground(new Color(0, 128, 0));
+                        case 3 -> boton.setForeground(Color.RED);
+                        case 4 -> boton.setForeground(new Color(0, 0, 128));
+                        case 5 -> boton.setForeground(new Color(128, 0, 0));
+                        case 6 -> boton.setForeground(new Color(64, 224, 208));
+                        case 7 -> boton.setForeground(Color.BLACK);
+                        case 8 -> boton.setForeground(Color.GRAY);
+                    }
+                } else {
+                    boton.setText("");
+                    boton.setIcon(null);
+                }
+            }
+        }
+    }
+
+    private void revelarTodasLasMinas() {
+        for (int i = 0; i < tablero.getCantidadFilasTablero(); i++) {
+            for (int j = 0; j < tablero.getCantidadColumnasTablero(); j++) {
+                Casilla casilla = tablero.getCasilla(i, j);
+                if (casilla.esCasillaMinada()) {
+                    casilla.revelarCasilla();
+                    actualizarBoton(botonesCasillas[i][j], casilla);
+                }
+            }
+        }
+    }
+
+    private void verificarVictoria() {
+        for (int i = 0; i < tablero.getCantidadFilasTablero(); i++) {
+            for (int j = 0; j < tablero.getCantidadColumnasTablero(); j++) {
+                Casilla casilla = tablero.getCasilla(i, j);
+                if (!casilla.esCasillaMinada() && !casilla.casillaEstaRevelada()) {
+                    return; 
+                }
+            }
+        }
+         temporizador.finalizarTemporizador();
+         revelarTodasLasMinas(); 
+        JOptionPane.showMessageDialog(null, "🎉 ¡Felicidades! Has ganado el juego.");
+        regresarVentana();
         
         
     }
+
+
+    private void regresarVentana(){
+        VentanaBuscaminas ventana = new VentanaBuscaminas();
+        
+        this.setVisible(false);
+        
+        ventana.setVisible(true);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PaneLTablero;

@@ -4,54 +4,70 @@
  */
 package Backend.BackendBuscaMinas.componentesTablero;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
 /**
  *
- * @author kenny
+ * @author Kenny
  */
 public class Casilla {
-    
+
     private boolean casillaMinada;
     private boolean casillaRevelada;
+    private boolean casillaMarcada;
     private int cantidadMinasAdyacentes;
 
-    public void colocarMina(){
+    public Casilla() {
+        this.casillaMinada = false;
+        this.casillaRevelada = false;
+        this.casillaMarcada = false;
+        this.cantidadMinasAdyacentes = 0;
+    }
+
+    public void colocarMina() {
         this.casillaMinada = true;
     }
 
-    public boolean esCasillaMinada(){
+    // Devuelve true si la casilla tiene una mina
+    public boolean esCasillaMinada() {
         return casillaMinada;
     }
-    
-    /**
-     * Metodo encargado de que cuando el usuario da click derecho revele lo que tenga
-     * la casilla
-     */
-    public void revelarCasilla(){
+
+    // Revela la casilla 
+    public void revelarCasilla() {
+        if (!casillaRevelada && !casillaMarcada) {
+            this.casillaRevelada = true;
+        }
+    }
+
+    // Devuelve true si la casilla ya fue revelada
+    public boolean casillaEstaRevelada() {
+        return casillaRevelada;
+    }
+
+    // Devuelve la cantidad de minas adyacentes
+    public int getCantidadMinasAdyacentes() {
+        return cantidadMinasAdyacentes;
+    }
+
+    // Establece cuántas minas hay alrededor de esta casilla
+    public void setCantidadMinasAdyacentes(int cantidadMinasAdyacentes) {
+        this.cantidadMinasAdyacentes = cantidadMinasAdyacentes;
+    }
+
+    // Devuelve true si la casilla está marcada con bandera
+    public boolean estaMarcada() {
+        return casillaMarcada;
+    }
+
+    // Alterna entre marcada y no marcada
+    public void alternarMarcado() {
+        if (!casillaRevelada) {
+            this.casillaMarcada = !this.casillaMarcada;
+        }
+    }
+
+    // Forzar revelado de las minas cuando se incia
+    public void revelarForzado() {
         this.casillaRevelada = true;
     }
-    
-    /**
-     * Metodo encargado de ir colocanbdo una imagen de una bandera para que el usuario pueda bmarcar las casillas
-     * que concidera si tiene mina
-     * @param boton desde el frontend recibe el boton de las casillas
-     */
-   public void marcarCasilla(JButton boton) {
-       
-    if (boton.getIcon() != null) {
-        boton.setIcon(null);
-    } else {
-        ImageIcon banderaImagen = new ImageIcon(getClass().getResource("/recursos/buscaminasBanderaBoton.png"));
-        Image imagenEscalada = banderaImagen.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        ImageIcon banderaEscalada = new ImageIcon(imagenEscalada);
-        boton.setIcon(banderaEscalada);
-    }
-    
-    }
-
-
-    
 }
+

@@ -5,7 +5,6 @@
 package Frontend.FrontendBuscaminas.JframeBuscaminas;
 
 import Backend.BackendBuscaMinas.componentesTablero.Tablero;
-import Backend.BackendBuscaMinas.partidaBuscaminas.Partida;
 import Backend.Jugador.Jugador;
 import Frontend.JFramePrincipal.VentanaInicial;
 import javax.swing.JFrame;
@@ -342,9 +341,9 @@ public class VentanaBuscaminas extends javax.swing.JFrame {
         if(minas == true && columnas == true && nombre == true && filas == true){
             VentanaJuegoBuscaminas iniciarJuego = new VentanaJuegoBuscaminas(jugador, tablero);
             iniciarJuego.setVisible(true);
-            Partida partida = new Partida(jugador, tablero);
+         //   Partida partida = new Partida(jugador, tablero);
             iniciarJuego.generarTablero();
-            partida.iniciarPartida();
+          //  partida.iniciarPartida();
 
             this.setVisible(false);
 
