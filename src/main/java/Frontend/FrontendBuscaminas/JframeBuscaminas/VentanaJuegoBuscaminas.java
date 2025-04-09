@@ -30,6 +30,7 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     private final Tablero tablero;
     private JButton[][] botonesCasillas;
     private boolean primerClickUsuario = false;
+    private int contadorBanderasMina = 0;
     
     /**
      * Creates new form VentanaJuegoBuscaminas
@@ -74,6 +75,7 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         labelTituloMinas = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         minasRestantes = new javax.swing.JLabel();
+        scrollTamañoTabnlero = new javax.swing.JScrollBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -106,7 +108,7 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         panelTemporizador.setLayout(panelTemporizadorLayout);
         panelTemporizadorLayout.setHorizontalGroup(
             panelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
         );
         panelTemporizadorLayout.setVerticalGroup(
             panelTemporizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -306,7 +308,10 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PanelTemporizador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PanelDatosJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(PanelDatosJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollTamañoTabnlero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,6 +320,7 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelDatosJugador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(PaneLTablero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrollTamañoTabnlero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -364,10 +370,8 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         int columnas = tablero.getCantidadColumnasTablero();
 
         botonesCasillas = new JButton[filas][columnas];
-
-        PaneLTablero.removeAll();
-        PaneLTablero.setLayout(new GridLayout(filas, columnas));
-        PaneLTablero.setPreferredSize(new Dimension(1117, 570));
+        
+        diseñoTablero(filas, columnas);
 
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
@@ -378,8 +382,16 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
         PaneLTablero.revalidate();
         PaneLTablero.repaint();
     }
+    
+    private void diseñoTablero(int filas, int columnas){
+        PaneLTablero.removeAll();
+        PaneLTablero.setLayout(new GridLayout(filas, columnas));
+        PaneLTablero.setPreferredSize(new Dimension(1117, 570));
+        
+    }
 
     private void colocarBotonesEnTablero(int i, int j) {
+        
         JButton botonCasillas = new JButton();
         botonCasillas.setPreferredSize(new Dimension(40, 40));
         botonCasillas.setFocusPainted(false);
@@ -392,72 +404,101 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 Casilla casillaActual = tablero.getCasilla(i, j);
-               
 
                 if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-                    temporizador.iniciarTemporizador();
-
-                    if (casillaActual.casillaEstaRevelada()) 
-                        return;
-
-                    if (!primerClickUsuario) {
-                        tablero.generarCasillas(i, j);
-                        primerClickUsuario = true;
-                    }
-
-                    if (casillaActual.esCasillaMinada()) {
-                        casillaActual.revelarCasilla();
-                        actualizarBoton(botonCasillas, casillaActual);
-                      //  botonCasillas.setEnabled(false);
-                        temporizador.finalizarTemporizador();
-                        revelarTodasLasMinas();
-                        JOptionPane.showMessageDialog(null, "💥 ¡Has perdido! Tocaste una mina.");
-                        regresarVentana();
-                        
-                        return;
-                        
-                    }
-
-                    casillaActual.revelarCasilla();
-                    actualizarBoton(botonCasillas, casillaActual);
-                //    botonCasillas.setEnabled(false);
-
-                    if (casillaActual.getCantidadMinasAdyacentes() == 0 && !casillaActual.esCasillaMinada() ) {
-                        tablero.generarEfectoDomino(i, j);
-                    }
-
-                    for (int fila = 0; fila < tablero.getCantidadFilasTablero(); fila++) {
-                        for (int columna = 0; columna < tablero.getCantidadColumnasTablero(); columna++) {
-                            Casilla c = tablero.getCasilla(fila, columna);
-                            if (c.casillaEstaRevelada()) {
-                                actualizarBoton(botonesCasillas[fila][columna], c);
-                               // botonesCasillas[fila][columna].setEnabled(false);
-                            }
-                        }
-                    }
-
-                    verificarVictoria();
-
+                    manejarClickIzquierdo(i, j, botonCasillas, casillaActual);
                 } else if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) {
-                    if (!casillaActual.casillaEstaRevelada()) {
-                        casillaActual.alternarMarcado();
-
-                        if (casillaActual.estaMarcada()) {
-                            ImageIcon banderaIcono = new ImageIcon(getClass().getResource("/recursos/buscaminasBanderaBoton.png"));
-                            Image imagenRedimensionada = banderaIcono.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-                            botonCasillas.setIcon(new ImageIcon(imagenRedimensionada));
-                            botonCasillas.setText("");
-                        } else {
-                            botonCasillas.setIcon(null);
-                        }
-                    }
+                    manejarClickDerecho(botonCasillas, casillaActual);
                 }
             }
         });
 
         PaneLTablero.add(botonCasillas);
     }
+    
+    private void manejarClickIzquierdo(int i, int j, JButton boton, Casilla casilla) {
+        if (casilla.estaMarcada()) return;
 
+        temporizador.iniciarTemporizador();
+
+        if (casilla.casillaEstaRevelada())
+            return;
+
+        if (!primerClickUsuario) {
+            tablero.generarCasillas(i, j);
+            tablero.generarEfectoDomino(i, j);
+            primerClickUsuario = true;
+        }
+
+        if (casilla.esCasillaMinada()) {
+            casilla.revelarCasilla();
+            actualizarBoton(boton, casilla);
+            temporizador.finalizarTemporizador();
+            revelarTodasLasMinas();
+            JOptionPane.showMessageDialog(null, "💥 ¡Has perdido! Tocaste una mina.");
+            regresarVentana();
+            return;
+        }
+
+        casilla.revelarCasilla();
+        actualizarBoton(boton, casilla);
+
+        if (casilla.getCantidadMinasAdyacentes() == 0 && !casilla.esCasillaMinada()) {
+            tablero.generarEfectoDomino(i, j);
+        }
+
+        for (int fila = 0; fila < tablero.getCantidadFilasTablero(); fila++) {
+            for (int columna = 0; columna < tablero.getCantidadColumnasTablero(); columna++) {
+                Casilla c = tablero.getCasilla(fila, columna);
+                if (c.casillaEstaRevelada()) {
+                    actualizarBoton(botonesCasillas[fila][columna], c);
+                }
+            }
+        }
+
+        verificarVictoria();
+    }
+
+    
+   private void manejarClickDerecho(JButton boton, Casilla casilla) {
+        if (!casilla.casillaEstaRevelada()) {
+            casilla.alternarMarcado();  
+
+            if (casilla.estaMarcada()) {  
+                if (casilla.esCasillaMinada()) {  
+                    contadorBanderasMina++; 
+                }
+
+                ImageIcon banderaIcono = new ImageIcon(getClass().getResource("/recursos/buscaminasBanderaBoton.png"));
+                Image imagenRedimensionada = banderaIcono.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                boton.setIcon(new ImageIcon(imagenRedimensionada));
+                boton.setText(""); 
+            } else { 
+                if (casilla.esCasillaMinada()) { 
+                    contadorBanderasMina--; 
+                }
+
+                boton.setIcon(null);  
+            }
+
+            actualizarLabelMinas(); 
+        }
+    }
+
+
+
+    private void actualizarLabelMinas() {
+     
+
+        int minasTotales = tablero.getMinasMax();
+        int minasRestantesMinima = Math.max(minasTotales - contadorBanderasMina, 0);
+
+        minasRestantes.setText(minasRestantesMinima + " / " + minasTotales);
+    }
+
+
+
+    
     private void actualizarBoton(JButton boton, Casilla casillaActual) {
         if (casillaActual.casillaEstaRevelada()) {
             boton.setBackground(Color.LIGHT_GRAY);
@@ -552,5 +593,6 @@ public class VentanaJuegoBuscaminas extends javax.swing.JFrame {
     private javax.swing.JLabel minasRestantes;
     private javax.swing.JPanel panelTemporizador;
     private javax.swing.JPanel panelTiempo;
+    private javax.swing.JScrollBar scrollTamañoTabnlero;
     // End of variables declaration//GEN-END:variables
 }
